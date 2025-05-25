@@ -1,0 +1,48 @@
+:root {
+    --cor-primaria: #09002f;
+    --cor-clara: #ffffff;
+    --cor-texto-claro: #ffffff;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    overflow-x: hidden;
+}
+.cor-fundo-clara {
+    background-color: var(--cor-clara);
+}
+.sidebar {
+    background-color: var(--cor-primaria);
+    min-height: 100vh;
+}
+.nav-link.active {
+    background-color: #323083;
+    color: var(--cor-texto-claro);
+    opacity: .8;
+    cursor: default;
+}
+main {
+    background-color: aliceblue;
+}
+.conteudo {
+    background-color: var(--cor-clara);
+    width: 100%;
+    min-height: 55vh;
+}
+.produto {
+    width: 14rem;
+}
+.produto:hover {
+    cursor: pointer;
+    opacity: .8;
+}
+.produto .imagem-produto {
+    background-color: #b8b6b6;
+    height: 180px;
+}
+.produto .nome-produto {
+    font-size: 1.2rem;
+}
