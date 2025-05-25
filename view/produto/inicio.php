@@ -21,14 +21,14 @@
                         <button type="button" class="btn btn-primary px-5" data-bs-toggle="modal" data-bs-target="#modalCadastroProduto">Cadastrar</button>
                     </div>
                     <div class="conteudo d-flex flex-column rounded-2 p-3" style="overflow-y: auto;">
-                        <div class="exibe-produtos d-flex flex-wrap column-gap-4 row-gap-5">
+                        <div class="d-flex flex-wrap column-gap-4 row-gap-5" id="exibeProdutos">
                             <?php
-                            for ($i = 0; $i < 10; $i++) { ?>
+                            foreach ($produtos as $produto) { ?>
                                 <div class="card produto">
                                     <span class="imagem-produto w-100 rounded-top-1"></span>
                                     <div class="card-body">
-                                        <span class="card-title nome-produto">Nome do produto aqui</span>
-                                        <p class="card-text text-primary">R$ 59,90</p>
+                                        <span class="card-title nome-produto"><?= $produto->nome;?></span>
+                                        <p class="card-text text-primary">R$ <?=$produto->exibirPreco();?></p>
                                         <button type="button" class="btn btn-primary w-100 adicionar-produto">Comprar</button>
                                     </div>
                                 </div>
@@ -42,7 +42,7 @@
     </div>
     <div class="modal fade " id="modalCadastroProduto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
-            <form class="modal-content">
+            <form class="modal-content" id="cadastrarProduto">
                 <div class="modal-header border-bottom-0">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar Produto</h1>
                 </div>
@@ -59,14 +59,14 @@
                             </div>
                             <div class="d-flex flex-column gap-1 w-25">
                                 <label class="label-form">Estoque</label>
-                                <input type="text" class="form-control" name="quantidadeEstoque">
+                                <input type="text" class="form-control" name="quantidadeEstoque" required>
                             </div>
                         </div>
                     </div>
                     <div class="d-flex flex-column gap-2">
                         <div class="d-flex justify-content-between align-items-center rounded-2 p-2 cor-fundo-cinza">
                             <h6 class="mb-0">Variações</h6>
-                            <button type="button" class="btn btn-primary px-4 btn-sm" id="btnAdicionarVariacao">Adicionar</button>
+                            <button type="button" class="btn btn-outline-primary px-4 btn-sm" id="btnAdicionarVariacao">Adicionar</button>
                         </div>
                         <div class="d-flex flex-column row-gap-1" id="variacoesProduto"></div>
                     </div>

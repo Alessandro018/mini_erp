@@ -5,7 +5,7 @@ class Request
 {
     private $url;
     private $queryParams;
-    private $bodyParams;
+    private $body;
 
     public function __construct()
     {
@@ -22,7 +22,7 @@ class Request
                 }
             }
         }
-        $this->setBodyParams();
+        $this->setBody();
     }
 
     public function route()
@@ -35,17 +35,17 @@ class Request
         return $this->queryParams;
     }
 
-    private function setBodyParams()
+    private function setBody()
     {
-        $this->bodyParams = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json' ? 
+        $this->body = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json' ? 
             json_decode(file_get_contents('php://input')) : $_POST;
         file_put_contents('php://input', '');
         $_POST = [];
     }
 
-    public function bodyParams()
+    public function getBody()
     {
-        return (object)$this->bodyParams;
+        return (object)$this->body;
     }
 
     public function requestMethod()
