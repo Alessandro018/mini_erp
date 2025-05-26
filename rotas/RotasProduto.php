@@ -9,11 +9,17 @@ class RotasProduto
 {
     public function __construct(Rota $rota)
     {
-        $rota->get('', function(Request $request) {
+        $rota->get("", function(Request $request) {
             ProdutoController::inicio();
         });
-        $rota->post('/produtos', function(Request $request) {
+        $rota->get("/produtos/:{id}", function(Request $request) {
+            ProdutoController::detalhesProduto($request);
+        });
+        $rota->post("/produtos", function(Request $request) {
             ProdutoController::cadastrar($request);
+        });
+        $rota->put("/produtos/:{id}", function(Request $request) {
+            ProdutoController::atualizarProduto($request);
         });
     }
 }

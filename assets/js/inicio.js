@@ -1,18 +1,20 @@
 $(document).ready(function () {
-    const exibirPreco = (preco) => preco.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})
+    const exibirPreco = (preco) => preco.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
 
     $('#modalCadastroProduto').on('hide.bs.modal', () => {
         $('#modalCadastroProduto form')[0].reset()
         $('#dadosProdutoPrincipal').removeClass('d-none').addClass('d-flex')
-        $('#cadastrarProduto input[name=precoProduto]').attr('required', true)
-        $('#cadastrarProduto input[name=quantidadeEstoque]').attr('required', true)
+        $('#cadastroProduto input[name=precoProduto]').attr('required', true)
+        $('#cadastroProduto input[name=quantidadeEstoque]').attr('required', true)
+        $('#cadastroProduto input[name=idProduto]').val('')
+        $('#cadastroProduto button[type=submit]').html('Cadastrar')
         $('#variacoesProduto').html('')
     })
 
     $('#btnAdicionarVariacao').on('click', () => {
         $('#dadosProdutoPrincipal').removeClass('d-flex').addClass('d-none')
-        $('#cadastrarProduto input[name=precoProduto]').removeAttr('required')
-        $('#cadastrarProduto input[name=quantidadeEstoque]').removeAttr('required')
+        $('#cadastroProduto input[name=precoProduto]').removeAttr('required')
+        $('#cadastroProduto input[name=quantidadeEstoque]').removeAttr('required')
         let indiceVariacao = $('#variacoesProduto .variacao-produto').length
 
         $('#variacoesProduto').append(`
@@ -37,16 +39,20 @@ $(document).ready(function () {
         `)
     })
 
-    $("#cadastrarProduto").on("submit", (e) => {
+    $("#cadastroProduto").on("submit", async (e) => {
         e.preventDefault()
+        let botaoEnviar = $(this).find('button[type=submit]')
 
+        let idProduto = $(this).find('input[name=idProduto]').val()
         let nomeProduto = $(this).find('input[name=nomeProduto]').val()
-        let precoProduto = $(this).find('input[name=precoProduto]').val()
+        let precoProduto = parseFloat($(this).find('input[name=precoProduto]').val().replace('.', '').replace(',', '.'))
         let quantidadeEstoque = $(this).find('input[name=quantidadeEstoque]').val()
 
-        $.ajax({
-            url: 'produtos',
-            method: 'POST',
+        $(botaoEnviar).attr('disabled', true)
+
+        await $.ajax({
+            url: idProduto.length > 0 ? `produtos/${idProduto}` : 'produtos',
+            method: idProduto.length > 0 ? 'PUT' : 'POST',
             contentType: 'application/json',
             accepts: ['application/json'],
             dataType: 'json',
@@ -55,25 +61,49 @@ $(document).ready(function () {
                 preco: precoProduto,
                 estoque: quantidadeEstoque
             }),
-            success: (response) => {
-                if(response.id) {
+            statusCode: {
+                201: (response) => {
                     $('#exibeProdutos').append(`
-                        <div class="card produto" data-idproduto="${response.id}">
+                        <div class="card produto" data-id-produto="${response.id}">
                             <span class="imagem-produto w-100 rounded-top-1"></span>
                             <div class="card-body">
                                 <span class="card-title nome-produto">${nomeProduto}</span>
-                                <p class="card-text text-primary">${exibirPreco(response.preco)}</p>
+                                <p class="card-text text-primary preco-produto">R$ ${exibirPreco(response.preco)}</p>
                                 <button type="button" class="btn btn-primary w-100 adicionar-produto">Comprar</button>
                             </div>
                         </div>
                     `)
                     $('#modalCadastroProduto').modal('hide')
+                },
+                204: () => {
+                    let produto = $(`#exibeProdutos .produto[data-id-produto="${idProduto}"]`)
+                    $(produto).find('.nome-produto').html(nomeProduto)
+                    $(produto).find('.preco-produto').html(`R$ ${exibirPreco(precoProduto)}`)
+                    $('#modalCadastroProduto').modal('hide')
                 }
             }
         })
+        $(botaoEnviar).removeAttr('disabled')
     })
 
-    // $('body').on('click', '.adicionar-produto', () => {
-    //     $('#modalCadastroProduto').modal('show')
-    // })
+    $('body').on('click', '.produto', (e) => {
+        if(!e.target.classList.contains('adicionar-produto')) {
+            let idProduto = e.currentTarget.getAttribute('data-id-produto')
+
+            $.ajax({
+                url: `produtos/${idProduto}`,
+                method: 'GET',
+                accepts: ['application/json'],
+                dataType: 'json',
+                success: (produto) => {
+                    $('#cadastroProduto input[name=idProduto]').val(produto.id)
+                    $('#cadastroProduto input[name=nomeProduto]').val(produto.nome)
+                    $('#cadastroProduto input[name=precoProduto]').val(exibirPreco(produto.preco))
+                    $('#cadastroProduto input[name=quantidadeEstoque]').val(produto.estoque)
+                    $('#cadastroProduto button[type=submit]').html('Atualizar')
+                    $('#modalCadastroProduto').modal('show')
+                }
+            })
+        }
+    })
 })

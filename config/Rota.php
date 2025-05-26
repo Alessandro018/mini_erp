@@ -14,30 +14,17 @@ class Rota
 
     public function get(string $route, callable $function)
     {
-        if($this->request->route() == $route) {
-            $this->validateMethod(__FUNCTION__);
-            if(is_callable($function)) {
-                $function($this->request);
-            }
-        }
+        $this->request->validate(method: "GET", url: $route, callback: $function);
     }
 
     public function post(string $route, callable $function)
     {
-        if($this->request->route() == $route) {
-            $this->validateMethod(__FUNCTION__);
-            if(is_callable($function)) {
-                $function($this->request);
-            }
-        }
+        $this->request->validate(method: "POST", url: $route, callback: $function);
     }
 
-    private function validateMethod(string $method)
+    public function put(string $route, callable $function)
     {
-        if(strtolower($_SERVER['REQUEST_METHOD']) != $method) {
-            header('HTTP/1.1 405 Method Not Allowed');
-            exit();
-        }
+        $this->request->validate(method: "PUT", url: $route, callback: $function);
     }
 
     public function getRequest() : Request

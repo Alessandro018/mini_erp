@@ -24,12 +24,12 @@
                         <div class="d-flex flex-wrap column-gap-4 row-gap-5" id="exibeProdutos">
                             <?php
                             foreach ($produtos as $produto) { ?>
-                                <div class="card produto">
+                                <div class="card produto" data-id-produto="<?= $produto->id; ?>">
                                     <span class="imagem-produto w-100 rounded-top-1"></span>
                                     <div class="card-body">
-                                        <span class="card-title nome-produto"><?= $produto->nome;?></span>
-                                        <p class="card-text text-primary">R$ <?=$produto->exibirPreco();?></p>
-                                        <button type="button" class="btn btn-primary w-100 adicionar-produto">Comprar</button>
+                                        <span class="card-title nome-produto"><?= $produto->nome; ?></span>
+                                        <p class="card-text text-primary preco-produto">R$ <?= $produto->exibirPreco(); ?></p>
+                                        <button type="button" class="btn btn-primary w-100 adicionar-produto" data-bs-toggle="offcanvas" data-bs-target="#modalCarrinho">Comprar</button>
                                     </div>
                                 </div>
                             <?php
@@ -42,7 +42,7 @@
     </div>
     <div class="modal fade " id="modalCadastroProduto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
-            <form class="modal-content" id="cadastrarProduto">
+            <form class="modal-content" id="cadastroProduto">
                 <div class="modal-header border-bottom-0">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar Produto</h1>
                 </div>
@@ -72,11 +72,19 @@
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center gap-4 border-top-0">
+                    <input type="hidden" name="idProduto">
                     <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">Fechar</button>
                     <button type="submit" class="btn btn-primary px-5">Cadastrar</button>
                 </div>
             </form>
         </div>
+    </div>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="modalCarrinho">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Meu Carrinho</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -4,12 +4,8 @@ use MiniERP\Config\BancoDados\Conexao;
 use PDO;
 
 class Estoque {
-    // public static function getAll() {
-    //     $sql = "SELECT e.*, p.nome as produto_nome, v.nome as variacao_nome FROM estoque e LEFT JOIN produtos p ON e.produto_id = p.id LEFT JOIN produto_variacoes v ON e.variacao_id = v.id";
-    //     return Database::connect()->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    // }
-
-    public static function movimentar(array $movimentacoes) {
+    private static function cadastrar(array $movimentacoes)
+    {
         $parametrosSql = str_repeat("(?, ?, ?),", sizeof($movimentacoes));
         $parametrosSql = substr($parametrosSql, 0, strlen($parametrosSql) -1);
         $sql = "INSERT INTO estoque (id_produto, id_variacao, quantidade) VALUES $parametrosSql";
@@ -24,10 +20,24 @@ class Estoque {
         return $estoqueMovimentado;
     }
 
-    // public static function update($id, $quantidade) {
-    //     $sql = "UPDATE estoque SET quantidade = ? WHERE id = ?";
-    //     $stmt = Database::connect()->prepare($sql);
-    //     $stmt->execute([$quantidade, $id]);
-    // }
+    private static function atualizar(array $movimentacoes)
+    {
+        $qtdMovRealizadas = 0;
+        $sql = "UPDATE estoque SET quantidade = ? WHERE id_produto = ?";
+        $conexao = Conexao::conectar();
+
+        foreach($movimentacoes as $movimentacao) {
+            $movimentarEstoque = $conexao->prepare($sql);
+            $atualizarEstoque = $movimentarEstoque->execute([$movimentacao->quantidade, $movimentacao->idProduto]);
+            if($atualizarEstoque) {
+                $qtdMovRealizadas++;
+            }
+        }
+        return $qtdMovRealizadas > 0;
+    }
+
+    public static function movimentar(string $acao, array $movimentacoes) {
+        return $acao == "cadastrar" ? self::cadastrar($movimentacoes) : self::atualizar($movimentacoes);
+    }
 }
 ?>
