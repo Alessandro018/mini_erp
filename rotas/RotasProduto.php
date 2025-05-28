@@ -10,7 +10,7 @@ class RotasProduto
     public function __construct(Rota $rota)
     {
         $rota->get("", function(Request $request) {
-            ProdutoController::inicio();
+            ProdutoController::inicio($request);
         });
         $rota->get("/produtos/:{id}", function(Request $request) {
             ProdutoController::detalhesProduto($request);

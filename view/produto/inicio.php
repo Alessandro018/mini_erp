@@ -6,15 +6,25 @@
     <title>Mini ERP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="./assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container-fluid">
         <div class="row">
-            <?php require_once "./view/layout/barraLateral.php"; ?>
+            <?php
+            use MiniERP\Utils\Preco;
+
+            require_once "./view/layout/barraLateral.php";
+            ?>
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 d-flex flex-column gap-4 overflow-hidden" style="max-height: 100vh;">
-                <h1>Mini ERP</h1>
+                <div class="d-flex justify-content-between">
+                    <h1>Mini ERP</h1>
+                    <button class="btn cor-fundo-clara text-primary px-4 py-2 fs-4 border border-primary" data-bs-toggle="offcanvas" data-bs-target="#modalCarrinho">
+                        <i class="bi bi-cart-fill"></i>
+                    </button>
+                </div>
                 <div class="d-flex flex-column gap-1" style="overflow-y: auto;">
                     <div class="d-flex justify-content-between rounded-2 p-3 cor-fundo-clara">
                         <h3>Produtos</h3>
@@ -84,7 +94,43 @@
             <h5 class="offcanvas-title">Meu Carrinho</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body"></div>
+        <div class="offcanvas-body">
+            <div class="d-flex flex-column gap-5">
+                <div class="d-flex flex-column gap-2" id="produtosCarrinho">
+                    <?php
+                    $produtosCarrinho = $carrinho["produtos"];
+                    $subtotal = 0;
+                    foreach($produtosCarrinho as $produto) {?>
+                        <div class="d-flex gap-4 border rounded-2 p-2 produto-carrinho">
+                            <div class="cor-fundo-cinza imagem-produto"></div>
+                            <div class="d-flex flex-column">
+                                <span><?=$produto["nome"];?></span>
+                                <span>R$ <?=Preco::exibir($produto["preco"]);?></span>
+                            </div>
+                        </div>
+                        <?php
+                        $subtotal += $produto["preco"] * $produto["quantidade"];
+                    }?>
+                </div>
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-between">
+                            <h6>Subtotal</h6>
+                            <h6 id="subtotalPedido">R$ <?=Preco::exibir($subtotal);?></h6>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h6>Frete</h6>
+                            <h6 id="valorFrete">R$ <?=Preco::exibir($carrinho["frete"]);?></h6>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h5>Total</h5>
+                            <h5 id="totalPedido">R$ <?=Preco::exibir($subtotal + $carrinho["frete"]);?></h5>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Finalizar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

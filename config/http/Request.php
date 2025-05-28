@@ -80,6 +80,11 @@ class Request
         $_POST = [];
     }
 
+    public function headers()
+    {
+        return $this->headers;
+    }
+
     public function getBody()
     {
         return (object)$this->body;

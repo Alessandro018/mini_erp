@@ -106,4 +106,38 @@ $(document).ready(function () {
             })
         }
     })
+
+    $('body').on('click', '.adicionar-produto', (e) => {
+        let idProduto = $(e.currentTarget).parents('.produto').attr('data-id-produto')
+
+        $.ajax({
+            url: `pedidos/produtos/${idProduto}`,
+            method: 'POST',
+            accepts: ['application/json'],
+            dataType: 'json',
+            success: (carrinho) => {
+                $('#produtosCarrinho').html('')
+                let {produtos, frete} = carrinho
+                let subtotal = 0;
+                
+                produtos.map(produto => {
+                    subtotal += (produto.quantidade * produto.preco)
+
+                    $('#produtosCarrinho').append(`
+                        <div class="d-flex gap-4 border rounded-2 p-2 produto-carrinho">
+                            <div class="cor-fundo-cinza imagem-produto"></div>
+                            <div class="d-flex flex-column">
+                                <span>${produto.nome}</span>
+                                <span>Qtd.: ${produto.quantidade}</span>
+                                <span>R$ ${exibirPreco(produto.preco)}</span>
+                            </div>
+                        </div>
+                    `)
+                })
+                $('#subtotalPedido').html(`R$ ${exibirPreco(subtotal)}`)
+                $('#valorFrete').html(`R$ ${exibirPreco(frete)}`)
+                $('#totalPedido').html(`R$ ${exibirPreco(subtotal + frete)}`)
+            }
+        })
+    })
 })

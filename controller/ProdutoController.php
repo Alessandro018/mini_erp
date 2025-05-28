@@ -3,14 +3,25 @@ namespace MiniERP\Controller;
 use MiniERP\Config\Http\Request;
 use MiniERP\Model\Produto;
 use MiniERP\Model\Estoque;
+use MiniERP\Model\Pedido;
+
 require_once "model/Produto.php";
 require_once "model/Estoque.php";
 
 class ProdutoController
 {
-    public static function inicio()
+    public static function inicio(Request $request)
     {
+        $host = $request->headers()->HTTP_HOST;
+        if(!isset($_SESSION[$host]["carrinho"])) {
+            $_SESSION[$host]["carrinho"] = [
+                "produtos"=> [],
+                "frete"=> 0
+            ];
+        }
+        
         $produtos = Produto::buscarTodos();
+        $carrinho = Pedido::detalhes($_SESSION[$host]["carrinho"]["produtos"]);
         require_once "view/produto/inicio.php";
     }
     public static function cadastrar(Request $request)
