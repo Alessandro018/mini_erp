@@ -8,14 +8,18 @@ class Estoque {
     {
         $parametrosSql = str_repeat("(?, ?, ?),", sizeof($movimentacoes));
         $parametrosSql = substr($parametrosSql, 0, strlen($parametrosSql) -1);
-        $sql = "INSERT INTO estoque (id_produto, id_variacao, quantidade) VALUES $parametrosSql";
-        $parametrosInsert = [];
+        $valoresSql = [];
+        $placeholders = [];
 
         foreach($movimentacoes as $movimentacao) {
-            $parametrosInsert[] = [$movimentacao->idProduto, $movimentacao->idVariacao ?? null, $movimentacao->quantidade];
+            $placeholders[] = "(?, ?, ?)";
+            $valoresSql[] = $movimentacao->idProduto;
+            $valoresSql[] = $movimentacao->idVariacao ?? null;
+            $valoresSql[] = $movimentacao->quantidade;
         }
+        $sql = "INSERT INTO estoque (id_produto, id_variacao, quantidade) VALUES ".implode(',', $placeholders);
         $movimentarEstoque = Conexao::conectar()->prepare($sql);
-        $estoqueMovimentado = $movimentarEstoque->execute(...$parametrosInsert);
+        $estoqueMovimentado = $movimentarEstoque->execute($valoresSql);
         
         return $estoqueMovimentado;
     }

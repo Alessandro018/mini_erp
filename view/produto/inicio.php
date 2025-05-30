@@ -50,11 +50,11 @@
             </main>
         </div>
     </div>
-    <div class="modal fade " id="modalCadastroProduto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade " id="modalCadastroProduto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <form class="modal-content" id="cadastroProduto">
                 <div class="modal-header border-bottom-0">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar Produto</h1>
+                    <h1 class="modal-title fs-5">Cadastrar Produto</h1>
                 </div>
                 <div class="modal-body d-flex flex-column gap-4">
                     <div class="d-flex flex-column gap-2">
@@ -89,6 +89,36 @@
             </form>
         </div>
     </div>
+    <div class="modal fade" id="modalExibeErro" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center align-items-center gap-4">
+                    <i class="bi bi-x-circle-fill text-danger fs-4"></i>
+                    <h6 class="text-danger mb-0" id="mensagemErro"></h6>
+                </div>
+                <div class="modal-footer d-flex justify-content-center gap-4 border-top-0">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalExibeSucesso" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center align-items-center gap-4">
+                    <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                    <h6 class="text-success mb-0" id="mensagemSucesso"></h6>
+                </div>
+                <div class="modal-footer d-flex justify-content-center gap-4 border-top-0">
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="modalCarrinho">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title">Meu Carrinho</h5>
@@ -112,23 +142,29 @@
                         $subtotal += $produto["preco"] * $produto["quantidade"];
                     }?>
                 </div>
-                <div class="d-flex flex-column gap-4">
-                    <div class="d-flex flex-column">
-                        <div class="d-flex justify-content-between">
-                            <h6>Subtotal</h6>
-                            <h6 id="subtotalPedido">R$ <?=Preco::exibir($subtotal);?></h6>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <h6>Frete</h6>
-                            <h6 id="valorFrete">R$ <?=Preco::exibir($carrinho["frete"]);?></h6>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <h5>Total</h5>
-                            <h5 id="totalPedido">R$ <?=Preco::exibir($subtotal + $carrinho["frete"]);?></h5>
-                        </div>
+                <form class="d-flex flex-column gap-4" id="finalizarPedido">
+                    <div class="d-flex flex-column gap-1 w-50">
+                        <label class="label-form">Cep</label>
+                        <input type="text" class="form-control" id="cepEntrega" autocomplete="off" minlength="8" maxlength="9" required>
                     </div>
-                    <button class="btn btn-primary">Finalizar</button>
-                </div>
+                    <div class="d-flex flex-column gap-4">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex justify-content-between">
+                                <h6>Subtotal</h6>
+                                <h6 id="subtotalPedido">R$ <?=Preco::exibir($subtotal);?></h6>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h6>Frete</h6>
+                                <h6 id="valorFrete">R$ <?=Preco::exibir($carrinho["frete"]);?></h6>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h5>Total</h5>
+                                <h5 id="totalPedido">R$ <?=Preco::exibir($subtotal + $carrinho["frete"]);?></h5>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary <?=sizeof($produtosCarrinho) == 0 ? 'd-none' : '';?>">Finalizar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

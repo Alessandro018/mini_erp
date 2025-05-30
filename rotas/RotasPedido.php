@@ -12,5 +12,9 @@ class RotasPedidos
         $rota->post("/pedidos/produtos/:{idProduto}", function(Request $request) {
             PedidoController::adicionarProduto($request);
         });
+        $rota->post("/pedidos", function(Request $request) {
+            PedidoController::criarPedido($request);
+        });
+        
     }
 }

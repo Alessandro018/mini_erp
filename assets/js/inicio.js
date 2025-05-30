@@ -1,6 +1,18 @@
 $(document).ready(function () {
     const exibirPreco = (preco) => preco.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
 
+    $('#modalExibeErro').on('show.bs.modal', () => {
+        Array.from($('.modal[id!=modalExibeErro]')).map(modal => {
+            $(modal).css('z-index', 1040);
+        })
+    })
+
+    $('#modalExibeErro').on('hide.bs.modal', () => {
+        Array.from($('.modal[id!=modalExibeErro]')).map(modal => {
+            $(modal).css('z-index', 1055);
+        })
+    })
+
     $('#modalCadastroProduto').on('hide.bs.modal', () => {
         $('#modalCadastroProduto form')[0].reset()
         $('#dadosProdutoPrincipal').removeClass('d-none').addClass('d-flex')
@@ -39,7 +51,7 @@ $(document).ready(function () {
         `)
     })
 
-    $("#cadastroProduto").on("submit", async (e) => {
+    $("#cadastroProduto").on("submit", (e) => {
         e.preventDefault()
         let botaoEnviar = $(this).find('button[type=submit]')
 
@@ -50,7 +62,7 @@ $(document).ready(function () {
 
         $(botaoEnviar).attr('disabled', true)
 
-        await $.ajax({
+        $.ajax({
             url: idProduto.length > 0 ? `produtos/${idProduto}` : 'produtos',
             method: idProduto.length > 0 ? 'PUT' : 'POST',
             contentType: 'application/json',
@@ -61,7 +73,16 @@ $(document).ready(function () {
                 preco: precoProduto,
                 estoque: quantidadeEstoque
             }),
+            success: () => {
+                $(botaoEnviar).removeAttr('disabled').html('Cadastrar')
+            },
             statusCode: {
+                200: (response) => {
+                    if(response.status == 'erro') {
+                        $('#mensagemErro').html(response.mensagem)
+                        $('#modalExibeErro').modal('show')
+                    }
+                },
                 201: (response) => {
                     $('#exibeProdutos').append(`
                         <div class="card produto" data-id-produto="${response.id}">
@@ -69,7 +90,7 @@ $(document).ready(function () {
                             <div class="card-body">
                                 <span class="card-title nome-produto">${nomeProduto}</span>
                                 <p class="card-text text-primary preco-produto">R$ ${exibirPreco(response.preco)}</p>
-                                <button type="button" class="btn btn-primary w-100 adicionar-produto">Comprar</button>
+                                <button type="button" class="btn btn-primary w-100 adicionar-produto" data-bs-toggle="offcanvas" data-bs-target="#modalCarrinho">Comprar</button>
                             </div>
                         </div>
                     `)
@@ -83,7 +104,6 @@ $(document).ready(function () {
                 }
             }
         })
-        $(botaoEnviar).removeAttr('disabled')
     })
 
     $('body').on('click', '.produto', (e) => {
@@ -137,6 +157,47 @@ $(document).ready(function () {
                 $('#subtotalPedido').html(`R$ ${exibirPreco(subtotal)}`)
                 $('#valorFrete').html(`R$ ${exibirPreco(frete)}`)
                 $('#totalPedido').html(`R$ ${exibirPreco(subtotal + frete)}`)
+                $('#finalizarPedido button[type=submit]').removeClass('d-none')
+            }
+        })
+    })
+
+    $('#finalizarPedido').on('submit', async (e) => {
+        e.preventDefault()
+        let cepEntrega = $('#cepEntrega').val()
+        let botaoFinalizar = $(this).find('button[type=submit]')
+        $(botaoFinalizar).attr('disabled', true).html('Aguarde...')
+
+        $.ajax({
+            url: 'pedidos',
+            method: 'POST',
+            accepts: ['application/json'],
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({
+                cepEntrega: cepEntrega
+            }),
+            success: () => {
+                $(botaoFinalizar).removeAttr('disabled').html('Finalizar')
+            },
+            statusCode: {
+                200: (response) => {
+                    if(response.status == 'erro') {
+                        $('#mensagemErro').html(response.mensagem)
+                        $('#modalExibeErro').modal('show')
+                    }
+                },
+                201: () => {
+                    $('#finalizarPedido')[0].reset()
+                    $('#produtosCarrinho').html('')
+                    $('#subtotalPedido').html(`R$ 0,00`)
+                    $('#valorFrete').html(`R$ 0,00`)
+                    $('#totalPedido').html(`R$ 0,00`)
+                    $('#modalCarrinho').modal('hide')
+                    $('#finalizarPedido button[type=submit]').addClass('d-none').removeAttr('disabled').html('Finalizar')
+                    $('#mensagemSucesso').html('Pedido realizado com sucesso')
+                    $('#modalExibeSucesso').modal('show')
+                }
             }
         })
     })
