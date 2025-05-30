@@ -164,4 +164,26 @@ class PedidoController
             ]);
         }
     }
+
+    public static function atualizarPedido(Request $request)
+    {
+        $body = $request->getBody();
+        header("Content-Type: application/json");
+        
+        if(!isset($body->id) || !isset($body->status)) {
+            echo json_encode([
+                "status"=> "erro",
+                "mensagem"=> "Não foi possível atualizar o pedido" 
+            ]);
+            exit;
+        }
+        $id = (int)addslashes($body->id);
+        $status = addslashes($body->status);
+
+        if(strtolower($status) == "cancelado") {
+            Pedido::remover($id);
+        } else {
+            Pedido::atualizar(id: $id, status: $status);
+        }
+    }
 }

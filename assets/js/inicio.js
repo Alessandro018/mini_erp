@@ -23,34 +23,6 @@ $(document).ready(function () {
         $('#variacoesProduto').html('')
     })
 
-    $('#btnAdicionarVariacao').on('click', () => {
-        $('#dadosProdutoPrincipal').removeClass('d-flex').addClass('d-none')
-        $('#cadastroProduto input[name=precoProduto]').removeAttr('required')
-        $('#cadastroProduto input[name=quantidadeEstoque]').removeAttr('required')
-        let indiceVariacao = $('#variacoesProduto .variacao-produto').length
-
-        $('#variacoesProduto').append(`
-            <div class="d-flex column-gap-4 rounded-2 p-2 cor-fundo-cinza variacao-produto">
-                <div class="d-flex flex-column gap-1 w-25">
-                    <label class="label-form">Cor</label>
-                    <input type="text" class="form-control" name="cor_${indiceVariacao}">
-                </div>
-                <div class="d-flex flex-column gap-1 w-25">
-                    <label class="label-form">Tamanho</label>
-                    <input type="text" class="form-control" name="tamanho_${indiceVariacao}">
-                </div>
-                <div class="d-flex flex-column gap-1 w-25">
-                    <label class="label-form">Preço</label>
-                    <input type="text" class="form-control" name="preco_${indiceVariacao}">
-                </div>
-                <div class="d-flex flex-column gap-1 w-25">
-                    <label class="label-form">Estoque</label>
-                    <input type="text" class="form-control" name="estoque_${indiceVariacao}">
-                </div>
-            </div>
-        `)
-    })
-
     $("#cadastroProduto").on("submit", (e) => {
         e.preventDefault()
         let botaoEnviar = $(this).find('button[type=submit]')

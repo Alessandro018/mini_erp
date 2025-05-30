@@ -4,9 +4,9 @@ use PDO;
 
 class Conexao
 {
-    private static $host = "localhost";
-    private static $bancoDados = "mini_erp";
-    private static $nomeUsuario = "root";
+    private static $host = "";
+    private static $bancoDados = "";
+    private static $nomeUsuario = "";
     private static $senha = "";
     public static $conexao;
 

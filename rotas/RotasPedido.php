@@ -15,6 +15,8 @@ class RotasPedidos
         $rota->post("/pedidos", function(Request $request) {
             PedidoController::criarPedido($request);
         });
-        
+        $rota->post("/pedidos/webhook", function(Request $request) {
+            PedidoController::atualizarPedido($request);
+        });
     }
 }

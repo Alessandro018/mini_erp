@@ -79,5 +79,26 @@ class Pedido {
 
         return $pedido;
     }
+
+    public static function atualizar(int $id, string $status)
+    {
+        $atualizarPedido = Conexao::conectar()->prepare("UPDATE pedidos SET status = ? WHERE id = ?");
+        $pedidoAtualizado = $atualizarPedido->execute([$status, $id]);
+
+        return $pedidoAtualizado;
+    }
+
+    public static function remover(int $id)
+    {
+        $removerPedido = Conexao::conectar()->prepare("DELETE FROM pedidos WHERE id = ?");
+        $pedidoRemovido = $removerPedido->execute([$id]);
+        
+        if($pedidoRemovido) {
+            $removerItens = Conexao::conectar()->prepare("DELETE FROM pedidos_produtos WHERE id_pedido = ?");
+            $removerItens->execute([$id]);
+        }
+
+        return $pedidoRemovido;
+    }
 }
 ?>

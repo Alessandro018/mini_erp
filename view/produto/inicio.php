@@ -73,13 +73,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex flex-column gap-2">
-                        <div class="d-flex justify-content-between align-items-center rounded-2 p-2 cor-fundo-cinza">
-                            <h6 class="mb-0">Variações</h6>
-                            <button type="button" class="btn btn-outline-primary px-4 btn-sm" id="btnAdicionarVariacao">Adicionar</button>
-                        </div>
-                        <div class="d-flex flex-column row-gap-1" id="variacoesProduto"></div>
-                    </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center gap-4 border-top-0">
                     <input type="hidden" name="idProduto">
