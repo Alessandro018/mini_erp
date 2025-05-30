@@ -31,3 +31,6 @@ Este projeto consiste em um sistema para cadastro e atualização de produtos e 
    - PHP >= 8.1  
    - Servidor MySQL  
    - Servidor Apache ou Nginx
+
+### Observação
+Para acessar os dados do produto e editar, basta clicar no card
