@@ -45,15 +45,13 @@ $(document).ready(function () {
                 preco: precoProduto,
                 estoque: quantidadeEstoque
             }),
-            success: () => {
-                $(botaoEnviar).removeAttr('disabled').html('Cadastrar')
-            },
             statusCode: {
                 200: (response) => {
                     if(response.status == 'erro') {
                         $('#mensagemErro').html(response.mensagem)
                         $('#modalExibeErro').modal('show')
                     }
+                    $(botaoEnviar).removeAttr('disabled').html('Cadastrar')
                 },
                 201: (response) => {
                     $('#exibeProdutos').append(`
@@ -67,12 +65,14 @@ $(document).ready(function () {
                         </div>
                     `)
                     $('#modalCadastroProduto').modal('hide')
+                    $(botaoEnviar).removeAttr('disabled').html('Cadastrar')
                 },
                 204: () => {
                     let produto = $(`#exibeProdutos .produto[data-id-produto="${idProduto}"]`)
                     $(produto).find('.nome-produto').html(nomeProduto)
                     $(produto).find('.preco-produto').html(`R$ ${exibirPreco(precoProduto)}`)
                     $('#modalCadastroProduto').modal('hide')
+                    $(botaoEnviar).removeAttr('disabled').html('Cadastrar')
                 }
             }
         })
